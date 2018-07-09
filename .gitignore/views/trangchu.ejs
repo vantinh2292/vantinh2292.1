@@ -1,0 +1,375 @@
+<html>
+<head>
+
+<title>Demo Socket IO</title>
+<script src="jquery-3.2.1.min.js"></script>
+<script src="socket.io/socket.io.js"></script>
+<script src="bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+<link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.min.css"/>
+<script src="bootstrap-toggle-master/js/bootstrap-toggle.min.js"></script>
+<link rel="stylesheet" href="bootstrap-toggle-master/css/bootstrap-toggle.min.css"/>
+<link href="Stype.css" rel="stylesheet">
+
+<script>
+   var queryString = window.document.URL.toString();
+   console.log(queryString.substring(0,25));
+   var socket = io.connect(queryString.substring(0,25));
+   //var socket = io.connect('http://192.168.10.14');
+   var IndexID;
+   var IndexClass;
+   var MangForce=["","",""];
+   var ArrayWriteMB=["","",""];
+   var WordDisplay=[];
+   var WordAdjust=[];
+   var IdWordAdjust;
+   var lengWordDisplay=10;
+   var ElementDevice=[];
+   var BitAdjust=[];
+   var AlreadyCheck=false;
+   var i;
+   var StateAdjustWordView=0;
+   //MySql
+   socket.on("Server-send-MySql_1",function(data){
+       try{
+           $("#table_test tr").remove(); 
+           for(var i=0;i<data.length;i++){
+               var table = document.getElementById("table_test");
+               var row = table.insertRow(0);
+               var cell1=row.insertCell(0);
+               var cell2=row.insertCell(1);
+               var cell3=row.insertCell(2);
+               var cell4=row.insertCell(3);
+               //var x = document.getElementById("table_test").rows[i].cells;
+               cell1.innerHTML = data[i].idTable_test;
+               cell2.innerHTML = data[i].name;
+               cell3.innerHTML = data[i].tuoi;
+               cell4.innerHTML = data[i].lop;
+           }
+       }
+       catch(err){console.log(err)};
+   })
+
+   //DateTime
+   socket.on("Server-send-Time",function(data){
+       try{document.getElementById("timeweb").innerHTML=data;}
+       catch(err){console.log(err)};
+   })
+   socket.on("Server-send-Date",function(data){
+       try{document.getElementById("dateweb").innerHTML=data;}
+       catch(err){console.log(err)};
+   })
+
+   //mobus
+   var myVar = setInterval(myTimer, 500);
+   function myTimer() {
+       try{
+           if(BitAdjust[0]==true){
+           $('#InputToggle1').bootstrapToggle('on')
+           }else{
+           $('#InputToggle1').bootstrapToggle('off')
+           }
+       }
+       catch(err){console.log(err)};
+   }
+   socket.on("Server-send-WordDisplay",function(data){
+       try{
+           var NameId;
+           for(i=0;i<data.length;i++){
+               WordDisplay[i]=data[i];
+               NameId="WordDisplay"+i;
+               try{
+                   document.getElementById(NameId).innerHTML=WordDisplay[i];
+                   if (NameId=="WordDisplay0"){document.getElementById(NameId).innerHTML+=" bar";}
+               }
+               catch(err){}
+           }
+           var a=parseInt(WordDisplay[0]*100/32766);
+           document.getElementById('ProgressBar1_Script').setAttribute("style","width:"+a+"%");
+           document.getElementById('ProgressBar1_Script').innerHTML=a+" %";
+       }
+       catch(err){console.log(err)};
+   })
+   socket.on("Server-send-WordAdjust",function(data){
+       try{
+           var NameId;
+           for(i=0;i<data.length;i++){
+               WordAdjust[i]=data[i];
+               NameId="WordAdjust"+i;
+               try{
+                   document.getElementById(NameId).innerHTML=WordAdjust[i];               
+               }
+               catch(err){}
+           }
+       }
+       catch(err){console.log(err)};
+   })
+   socket.on("Server-send-InputSignal",function(data){
+       var NameId;
+       
+           for(var i=0;i<data.length;i++){
+           ElementDevice[i]=data[i];
+           NameId="InputSignal"+i;
+     
+           try {
+               if (ElementDevice[i] == 1) {
+                   document.getElementById(NameId).style.display="block";
+                   } else {
+                   document.getElementById(NameId).style.display="none";
+                   }
+               }
+           catch(err) {}
+   }})
+   socket.on("Server-send-BitAdjust",function(data){
+       try{
+           for(var i=0;i<data.length;i++){BitAdjust[i]=data[i];}
+           $('#InputToggle1').bootstrapToggle('on')
+       }
+       catch(err){console.log(err)};    
+   })
+
+   socket.on("Server-send-data",function(data){
+       try{
+           if (data[0]=="Run"){
+           var srcImg=data[2]+"_R.gif";
+           (document).getElementById(data[1]).src=srcImg;
+           var ArrayClass=document.getElementsByClassName("line2");
+           for(var i=0;i<ArrayClass.length;i++){ArrayClass[i].style.stroke="green";}
+           //$("#2").css("stroke","blue");
+           };
+           if (data[0]=="Stop"){
+               var srcImg=data[2]+"_S.gif";
+               (document).getElementById(data[1]).src=srcImg;
+           };
+           if (data[0]=="Fault"){
+               var srcImg=data[2]+"_F.gif";
+               (document).getElementById(data[1]).src=srcImg;
+           };
+       }
+       catch(err){console.log(err)};  
+       //$("#noidung").append(data+", ");
+   })
+   $(document).ready(function(){
+       try{
+   ///Force
+           $("#Button_Run").click(function(){
+               MangForce[0]="Run";
+               MangForce[1]=IndexID;
+               MangForce[2]=IndexClass;
+               socket.emit("Client-send-data",MangForce);
+           })
+           $("#Button_Stop").click(function(){
+               MangForce[0]="Stop";
+               MangForce[1]=IndexID;
+               MangForce[2]=IndexClass;
+               socket.emit("Client-send-data",MangForce);
+           })
+           $("#Button_Fault").click(function(){
+               MangForce[0]="Fault";
+               MangForce[1]=IndexID;
+               MangForce[2]=IndexClass;
+               socket.emit("Client-send-data",MangForce);
+           })
+
+           //-------------------------------------------------------------------------------------
+           //Image        
+           $(".Img_HM").click(function(){
+               IndexID=this.id;
+               IndexClass="Img_HM";
+               $('#ModalForce').modal()
+           });
+           $("#Img_AL").click(function(){
+               IndexID=this.id;
+               $('#ModalForce').modal()
+           })
+           var timeoutId = 0;
+           $('.WordAdjust').on('mousedown', function() {
+               var itemsAdjust=$(this);
+               var innerHTML=this.innerHTML;
+               timeoutId = setTimeout(function(){ myfunction1(itemsAdjust,innerHTML) }, 1000);
+           }).on('mouseup mouseleave', function() {
+               clearTimeout(timeoutId);
+           });
+           function myfunction(){
+               console.log($(this).innerHTML);
+           }
+           function myfunction1(itemsAdjust,innerHTML){
+               var offset = itemsAdjust.offset();
+               document.getElementById("InputAdjustWord").style.top = offset.top;
+               document.getElementById("InputAdjustWord").style.left = offset.left;
+               document.getElementById("InputAdjustWord").style.width =itemsAdjust.outerWidth();
+               document.getElementById("InputAdjustWord").style.height = itemsAdjust.outerHeight();
+               //document.getElementById("InputAdjustWord").style.width =$( this ).width();
+               //document.getElementById("InputAdjustWord").style.height = $( this ).height();
+               document.getElementById("InputAdjustWord").value = innerHTML;
+               IdWordAdjust=itemsAdjust.attr('id');
+               $("#InputAdjustWord").show(); 
+               $("#InputAdjustWord").css({'font-size':'15px'});
+               $("#InputAdjustWord").css({'text-align':'center'});
+               $("#InputAdjustWord").css({'vertical-align':'baseline'});
+               $("#InputAdjustWord").css({'padding-left':'5px'});
+               $("#InputAdjustWord").css({'padding-right':'5px'});
+               $("#InputAdjustWord").css({'padding-top':'5px'});
+               $("#InputAdjustWord").css({'padding-bottom':'5px'});
+               $("#InputAdjustWord").css({'font-weight':'700'});
+               $("#InputAdjustWord").css({'line-height':'1'});
+               $("#InputAdjustWord").css({'white-space':'nowrap'});
+               $("#InputAdjustWord").css({'border-radius':'.25em'});
+               $("#InputAdjustWord").css({'background-color':'Yellow'});
+           }
+           //$(".WordAdjust").dblclick(function(){
+               $(".WordAdjust").click(function(){
+               var itemsAdjust=$(this);
+               var innerHTML=this.innerHTML;
+               var a=myfunction1(itemsAdjust,innerHTML);
+               StateAdjustWordView=2;
+               });
+               $("#InputAdjustWord").click(function(){StateAdjustWordView=2;})
+               $("#Total").click(function(){
+                   if (StateAdjustWordView>0){StateAdjustWordView-=1;}
+                   if (StateAdjustWordView==0){$("#InputAdjustWord").hide();}
+               })
+           }
+           catch(err){console.log(err)}; 
+   });
+   function myKeyPress(e) {
+       try{
+           var keynum;
+           if(window.event) { // IE                    
+               keynum = e.keyCode;
+           } else if(e.which){ // Netscape/Firefox/Opera                   
+               keynum = e.which;
+           }
+       
+           if (keynum==13){
+               ArrayWriteMB[0]="AdjustWord";
+               ArrayWriteMB[1]=IdWordAdjust;
+               ArrayWriteMB[2]=document.getElementById("InputAdjustWord").value;
+               socket.emit("Client-send-data-WordAdjust",ArrayWriteMB);
+               $("#InputAdjustWord").hide(); 
+           };
+       }
+       catch(err){console.log(err)};
+   } 
+   $(document).keyup(function(e) {
+       try{
+           if (e.keyCode == 27) { // escape key maps to keycode `27`
+           $("#InputAdjustWord").hide(); 
+           }
+       }
+       catch(err){console.log(err)}; 
+});    
+                
+</script>
+</head>
+<body background=Scada.jpg>
+    <div id="Total">
+    <svg height="210" width="500">
+    <line class="line1" id="1" x1="0" y1="40" x2="200" y2="200" style="stroke:red;stroke-width:2" />
+    <line class="line2" id="2" x1="0" y1="40" x2="300" y2="200" style="stroke:red;stroke-width:2" />
+    <line class="line2 line3" id="3" x1="0" y1="40" x2="400" y2="200" style="stroke:red;stroke-width:2" />
+    </svg>
+    
+    <div class="space"></div>
+    <img class="Img_HM" id="_1" src="Img_HM_F.gif">
+    <img class="Img_HM" id="_2" src="Img_HM_F.gif">
+    <img class="Img_HM" id="_3" src="Img_HM_F.gif">
+    <img class="Img_HM" id="_4" src="Img_HM_F.gif">
+    <img class="Img_HM" id="_5" src="Img_HM_F.gif">
+    <img class="Img_AL" id="_6" src="Img_AL_R.gif">
+    <img id="InputSignal1" src="led33x33.png">
+    <img id="InputSignal2" src="led33x33.png">
+    <img id="InputSignal3" src="led33x33.png">
+    <img id="InputSignal4" src="ledGreen48x48.png">
+    <img id="InputSignal5" src="ledGreen48x48.png">
+    <img id="InputSignal6" src="ledGreen48x48.png">
+
+    <button type="button" class="btn btn-success btn-sm">Success</button>
+    <div id="timeweb">No have Internet</div>
+    <div id="dateweb">No have Internet</div>
+    <div id="WordDisplay0" class="label label-primary">Disconnnect</div>
+    <div id="WordDisplay1" class="label label-primary">Disconnnect</div>
+    <div id="WordDisplay2" class="label label-primary">Disconnnect</div>
+    <div id="WordDisplay3" class="label label-primary">Disconnnect</div>
+
+    <div id="WordAdjust0" class="WordAdjust">Disconnnect</div>
+    <div id="WordAdjust1" class="WordAdjust">Disconnnect</div>
+    <div id="WordAdjust2" class="WordAdjust">Disconnnect</div>
+    <input id="InputAdjustWord" type="text" name="WordAdjust123" value=" " onkeypress="return myKeyPress(event)">
+
+    <input id="InputToggle1" type="checkbox" checked data-toggle="toggle" data-on="Ready" data-off="Not Ready" data-onstyle="success" data-offstyle="danger" onclick="myFunctionToggle()">
+
+    <div id="ProgressBar1">
+        <div class="progress">
+            <div id="ProgressBar1_Script" class="progress-bar progress-bar-striped active" role="progressbar"
+            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:50%">  
+            </div>
+        </div>
+    </div>         
+
+        <!-- Modal -->
+        <div class="modal fade" id="ModalForce" role="dialog">
+          <div class="modal-dialog modal-sm">
+          
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
+                <h4 class="modal-title">Modal Header</h4>
+              </div>
+              <div class="modal-body">
+                <p>Some text in the modal.</p>
+              </div>
+              <div class="modal-footer">
+                    <div class="btn-group btn-group-sm" id="modalforce">
+                            <button type="button" class="btn btn-primary" id="Button_Run">Click Run</button>
+                            <button type="button" class="btn btn-success" id="Button_Stop">Click Stop</button>
+                            <button type="button" class="btn btn-danger" id="Button_Fault">Click Fault</button>
+                    </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        <table id="table_test" border="1">
+                <tr>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                        <td>5</td>
+                    </tr>
+                    <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                                <td>5</td>
+                            </tr>
+                            <tr>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>3</td>
+                                    <td>4</td>
+                                    <td>5</td>
+                                </tr>
+                
+            </table>
+    </div>  
+    
+
+</body>
+</html>

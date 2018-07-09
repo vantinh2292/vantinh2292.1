@@ -1,0 +1,191 @@
+body{
+    font-size: 6;
+    background-repeat: no-repeat;
+    width: 1900;
+    height: 850;
+    overflow: scroll;
+    margin: auto;
+}
+#Total{
+    width: 1900;
+    height: 850;
+}
+#table_test{
+    position: absolute;
+    top: 190px;
+    left: 183px;
+    border: rgb(245, 13, 25);
+}
+
+#_1{
+    position: absolute;
+    top: 190px;
+    left: 183px;
+    width: 35px;
+    height: 35px;
+}
+#_2{
+    position: absolute;
+    top: 484px;
+    left: 183px;
+    width: 35px;
+    height: 35px;
+}
+#_3{
+    position: absolute;
+    top: 314px;
+    left: 805px;
+    width: 35px;
+    height: 35px;
+}
+#_4{
+    position: absolute;
+    top: 314px;
+    left: 1551px;
+    width: 35px;
+    height: 35px;
+}
+#_5{
+    position: absolute;
+    top: 623px;
+    left: 1613px;
+    width: 35px;
+    height: 35px;
+}
+
+
+#InputSignal1{
+    position: absolute;
+    top: 623px;
+    left: 1763px;
+}
+#InputSignal2{
+    position: absolute;
+    top: 560px;
+    left: 1763px;
+}
+#InputSignal3{
+    position: absolute;
+    top: 480px;
+    left: 1763px;
+}
+#InputSignal4{
+    position: absolute;
+    top: 447px;
+    left: 395px;
+    width: 25px;
+    height: 25px;
+}
+#InputSignal5{
+    position: absolute;
+    top: 311px;
+    left: 464px;
+    width: 25px;
+    height: 25px;
+}
+#InputSignal6{
+    position: absolute;
+    top: 201px;
+    left: 393px;
+    width: 25px;
+    height: 25px;
+}
+#InputAdjustWord{
+    position: absolute;
+    background-color: yellow;
+    top: 446px;
+    left: 428px;
+}
+
+/*#Button_AL_Run{
+    position: absolute;
+    top: 140;
+    left: 22;
+    width: 50;
+}
+#Button_AL_Stop{
+    position: absolute;
+    top: 140;
+    left: 99;
+    width: 50;
+}
+#Button_AL_Fault{
+    position: absolute;
+    top: 140;
+    left: 179;
+    width: 50;
+}
+*/
+.modal-footer {
+    text-align: center;
+}
+
+#WordDisplay0{
+    position: absolute;
+    width: 100;
+    top: 157px;
+    left: 560px;
+    background: transparent;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    color: blue;
+}
+.WordAdjust{
+    font-size: 15;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top:5px;
+    padding-bottom: 5px;
+    width: 60;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+    background-color: rgb(27, 233, 27);
+    
+}
+#WordAdjust0{
+    position: absolute;
+    top: 446px;
+    left: 428px;
+}
+#WordAdjust1{
+    position: absolute;
+    top: 311px;
+    left: 497px;
+}
+#WordAdjust2{
+    position: absolute;
+    top: 200px;
+    left: 426px;
+}
+#ProgressBar1{
+    position: absolute;
+    top: 325px;
+    left: 470px;
+    width: 283px;
+    -ms-transform: rotate(-90deg); /* IE 9 */
+    -webkit-transform: rotate(-90deg); /* Safari */
+    transform: rotate(-90deg); /* Standard syntax */
+}
+#timeweb{
+    position: absolute;
+    top: 22px;
+    left: 257px;
+    font-size: 40;
+    font-weight: 1000;
+    color: rgb(245, 13, 25)
+}
+#dateweb{
+    position: absolute;
+    top: 72px;
+    left: 257px;
+    font-size: 20;
+    font-weight: 1000;
+    color: #0d1cf5;
+    font-family: -webkit-body;
+}
